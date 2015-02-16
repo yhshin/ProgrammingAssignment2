@@ -139,9 +139,6 @@ cacheSolve <- function(x, ...) {
     ## Get cached inverse matrix, and return it if not null
     minv <- x$getInvMatrix(...)
     
-    ## Cache the ... arg too
-    ## Return only if ... is the same as before
-    
     if (!is.null(minv)) {
         message("getting cached data")
         return(minv)
