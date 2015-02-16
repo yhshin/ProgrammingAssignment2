@@ -38,18 +38,33 @@
 ##   [1,]   -4  3.5
 ##   [2,]    3 -2.5
 ##
+##
+## NOTE: There is a post about possible bug with ... arg.
+##         https://class.coursera.org/rprog-011/forum/thread?thread_id=356
+##       But in case of solving inverse matrix, we can ignore changing ... args
+##       because it does NOT affect the result.
+##
+##       Just as a note for future use, an example of getInvMatrix(...) function
+##       is implemented and the original version is commented out.
+##
+## Reference: 
+##   1. How to handle ... argument in user function
+##        http://stackoverflow.com/questions/3057341/how-to-use-rs-ellipsis-feature-when-writing-your-own-function
+##
 
 ##
-## This function wraps a given mxtrix with functions 
-## to get and set both the matrix and its inverse.
+## makeCacheMatri() function creates and returns a list object which has 
+## elements bounded to get and set functions.  It is this boundings enabling
+## us to call those functions outside of makeCacheMatrix() function!
 ##
-## NOTE that no actual calculattion is done in here. 
+## NOTE:
+##   Actual calculattion is being performed in cacheSolve() function.
 ##
-## Argument 
+## Arguments:
 ##   x  : n*n inversible matrix
 ##
-## Return
-##   A list of operations on the cached values
+## Return:
+##   A list whose elements are get and set functions to the cached values
 ##     - get(), set()
 ##     - getInvMatrix(), setInvMatrix()
 ##
@@ -58,6 +73,11 @@ makeCacheMatrix <- function(x = matrix()) {
     # create the variable to cache inverse of x
     invM <- NULL        # to modify this from inside a nested function,
                         # spureassignment op (<<-) is required !
+    
+    # Additional member to handle a case posted in the thread
+    #   https://class.coursera.org/rprog-011/forum/thread?thread_id=356
+    #
+    dots.cached <- list()
     
     # set a new matrix to be wrapped
     set <- function(y) {
@@ -74,7 +94,27 @@ makeCacheMatrix <- function(x = matrix()) {
     }
     
     # returns cached inverse matrix
-    getInvMatrix <- function() invM
+    ##getInvMatrix <- function() { invM }
+    #
+    # We may pass different option to solveCache() function, which in prnciple
+    # should be caught and be handled properly. But in martix invsers case,
+    # other options does *not* affect the result so it can be ignored.
+    #
+    # This is a very simpl example of handling ... arg for future reference.
+    getInvMatrix <- function(...) {
+        # Check ... arg.
+        #   + if ... is empty, simply re-use current 'invM'.
+        #   + if it is not empty and is different from cached list, 
+        #        reset 'invM' to NULL, and
+        #        save new ... arg list to dots.cached.
+        dots.new <- list(...)
+        if (length(dots.new) && !identical(dots.cached, dots.new)) {
+            message("dots(...) arg has been changed")
+            dots.cached <<- dots.new
+            invM <<- NULL
+        }
+        invM
+    }
     
     # return a list of operations to be used with this 
     list(set = set, get = get, 
@@ -97,7 +137,11 @@ makeCacheMatrix <- function(x = matrix()) {
 ##
 cacheSolve <- function(x, ...) {
     ## Get cached inverse matrix, and return it if not null
-    minv <- x$getInvMatrix()
+    minv <- x$getInvMatrix(...)
+    
+    ## Cache the ... arg too
+    ## Return only if ... is the same as before
+    
     if (!is.null(minv)) {
         message("getting cached data")
         return(minv)
