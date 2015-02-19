@@ -1,14 +1,14 @@
 ## 
-## **makeCacheMatrix()** caches a given matrix and its inverse matrix, and
+## makeCacheMatrix() caches a given matrix and its inverse matrix, and
 ## wraps them with getters and setters to access it.
 ##   - cached values can be obtained by get() and getInvMatrix() functions.
 ##   - new values are set by set() and setInvMatrix() function.
 ##
-## **NOTE** that the above function normally can **_not_** be called from 
-##      outside of the function. That is why a list whose elements are
-##      bound to the function is returned from the function !
+##   NOTE that the above function normally can *not* be called from 
+##        outside of the function. That is why a list whose elements are
+##        bound to the function is returned from the function !
 ##
-## **cacheSolve()** operates on the cached matrix and returns cached inverse.
+## cacheSolve() operates on the cached matrix and returns cached inverse.
 ## If new matrix is assigned to the cache, it recalculates inverse and
 ## stores it to the cache.
 ##
@@ -121,8 +121,8 @@ makeCacheMatrix <- function(x = matrix()) {
     }
     
     # return a list of operations to be used with this
-    # *NOTEs* 
-    #   1. The above functions normally can **_not_** be called from outside
+    # NOTEs 
+    #   1. The above functions normally can *not* be called from outside
     #      of the function. That is why the following list whose elements are
     #      bound to the function is returned !
     #   2. List elements can have any names such as 'hello', 'world', etc.
